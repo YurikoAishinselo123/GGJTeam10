@@ -7,6 +7,7 @@ TagManager:
   - Forward_Back
   - Coin
   - Shark
+  - Left_Right
   layers:
   - Default
   - TransparentFX

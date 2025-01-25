@@ -11,6 +11,7 @@ public class FishController : MonoBehaviour
 
 
     public int coinCount = 0;
+    private bool isTurn = false;
 
     void Start()
     {
@@ -22,6 +23,8 @@ public class FishController : MonoBehaviour
     void Update()
     {
         Movement();
+        Facing();
+        Debug.Log("is Turn " + isTurn);
     }
 
     void Movement()
@@ -33,23 +36,58 @@ public class FishController : MonoBehaviour
         transform.position += new Vector3(direction.x, direction.y, 0) * Time.deltaTime * moveSpeed;
     }
 
+    void Facing()
+    {
+        Vector2 direction = moveAction.ReadValue<Vector2>();
+
+        if (isTurn && direction.x != 0)
+        {
+            isTurn = true;
+            if (direction.x > 0)  
+            {
+                transform.rotation = Quaternion.Euler(0, 0, 90);  
+            }
+            else if (direction.x < 0)  
+            {
+                transform.rotation = Quaternion.Euler(0, 0, -90);  
+            }
+        }
+        else if (!isTurn && direction.y != 0)
+        {
+            isTurn = false;
+
+            if (direction.y > 0)
+            {
+                transform.rotation = Quaternion.Euler(0, 0, 0);
+            }
+            else if (direction.y < 0) 
+            {
+                transform.rotation = Quaternion.Euler(0, 180, 0);
+            }
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Coin"))
         {
-            Debug.Log("Coisn");
             coinCount++;
             Destroy(collision.gameObject);
         }
+        if (collision.gameObject.CompareTag("Shark"))
+        {
+            Debug.Log("Die");
+        }
+        if (collision.gameObject.CompareTag("Forward_Back"))
+        {
+            isTurn = false;
+            Debug.Log("Forward");
+        }
+        if (collision.gameObject.CompareTag("Left_Right"))
+        {
+            isTurn = true;
+            Debug.Log("Turn");
+        }
     }
-
-    //private void OnCollisionEnter2D(Collision2D collision)
-    //{
-    //    if (collision.gameObject.CompareTag("Coin"))
-    //    {
-    //        Debug.Log("Coin");
-    //        coinCount++;
-    //    }
-    //}
 
 }
